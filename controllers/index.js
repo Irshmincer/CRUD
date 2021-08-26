@@ -66,9 +66,11 @@ module.exports = {
     
       const id = req.body.id;
       if (id) {
-        query1 = `SELECT * FROM Users WHERE id = ${id}`;
+       query1 = `SELECT * FROM Users   LEFT JOIN Userdetails ON Users.id = Userdetails.userid WHERE id = ${id}`;
       } else {
-        query1 = "SELECT * FROM Users ";
+        query1 = ` SELECT * FROM Users LEFT JOIN Userdetails ON Users.id = Userdetails.userid`
+        
+        
       }
       const result = await query(query1, (err, rows) => {
         if (err) {
@@ -103,14 +105,15 @@ module.exports = {
   //DELETE
   delete: async (req, res) => {
     try {
-     
-      const result = await query("DELETE from Users WHERE id=?", [
-        req.params.id,
+      const id =req.body.id
+      
+      const result = await query("DELETE  from Users WHERE id=?", [
+        req.body.id,
       ]);
       return res.status(200).send({
         status: 200,
         message: "Success",
-        data: `ID ${req.params.id} has been deleted from db`,
+        data: `ID ${req.body.id} has been deleted from db`,
       });
     } catch (err) {
       console.log(err);
